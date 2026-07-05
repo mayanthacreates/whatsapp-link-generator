@@ -235,6 +235,8 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
 .qr-box img,.qr-box canvas{display:block;width:160px;height:160px;image-rendering:pixelated}
 .qr-side{flex:1;min-width:180px}
 .qr-side p{font-size:var(--text-sm);color:var(--ink-2);margin-bottom:var(--space-sm);max-width:32ch}
+.qr-actions{display:flex;flex-direction:column;gap:var(--space-2xs);align-items:stretch;max-width:220px}
+.qr-actions .btn{width:100%;justify-content:center}
 .open-link{display:inline-block;margin-top:var(--space-sm);font-size:var(--text-sm);color:var(--brand);font-weight:500;transition:color var(--dur-micro) ease}
 .open-link:hover{color:var(--ink)}
 
@@ -459,10 +461,11 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
               <div class="qr-side">
                 <span class="label">QR code</span>
                 <p>Scan with any phone camera to open the chat instantly. Print it, frame it, sticker it.</p>
-                <button class="btn btn-ghost" id="downloadBtn" type="button">Download QR (PNG)</button>
-                <button class="btn btn-ghost" id="downloadSvgBtn" type="button">Download QR (SVG)</button>
-                <button class="btn btn-ghost" id="vcardBtn" type="button">Save contact (vCard)</button>
-                <br>
+                <div class="qr-actions">
+                  <button class="btn btn-ghost" id="downloadBtn" type="button">Download QR (PNG)</button>
+                  <button class="btn btn-ghost" id="downloadSvgBtn" type="button">Download QR (SVG)</button>
+                  <button class="btn btn-ghost" id="vcardBtn" type="button">Save contact (vCard)</button>
+                </div>
                 <a class="open-link" id="openLink" href="#" target="_blank" rel="noopener">Test the link &rarr;</a>
               </div>
             </div>
