@@ -22,3 +22,9 @@ export function buildShareUrl(origin, pathname, ccValue, phoneValue, msgValue) {
     '&phone=' + encodeURIComponent(phoneValue) +
     '&msg=' + encodeURIComponent(msgValue);
 }
+
+export function parseBulkDigits(raw) {
+  return raw.split('\n')
+    .map(function (l) { return l.replace(/\D/g, '').replace(/^0+/, ''); })
+    .filter(Boolean);
+}

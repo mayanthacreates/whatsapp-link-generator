@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildQrSvgMarkup, buildVcard, buildShareUrl } from '../public/logic.js';
+import { buildQrSvgMarkup, buildVcard, buildShareUrl, parseBulkDigits } from '../public/logic.js';
 
 test('buildQrSvgMarkup renders one rect per dark module', () => {
   const fakeQr = {
@@ -29,4 +29,9 @@ test('buildVcard uses the provided name', () => {
 test('buildShareUrl encodes all three fields as query params', () => {
   const url = buildShareUrl('https://mayantha.ae', '/whatsapp-link-generator', '971', '50 123 4567', 'Hi there');
   assert.equal(url, 'https://mayantha.ae/whatsapp-link-generator?cc=971&phone=50%20123%204567&msg=Hi%20there');
+});
+
+test('parseBulkDigits strips non-digits, leading zeros, and blank lines', () => {
+  const result = parseBulkDigits('050 123 4567\n\n502345678\nabc\n0503456789');
+  assert.deepEqual(result, ['501234567', '502345678', '503456789']);
 });

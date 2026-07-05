@@ -264,6 +264,14 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
   display:block;text-align:right;font-size:10px;color:#667781;margin-top:2px;
 }
 
+.bulk{padding-top:var(--space-3xl);padding-bottom:var(--space-3xl);border-top:1px solid var(--line)}
+.bulk h2{font-size:var(--text-2xl);font-weight:600;letter-spacing:var(--tracking-display);margin-bottom:var(--space-sm)}
+.bulk .bulk-intro{color:var(--ink-2);font-size:var(--text-base);max-width:56ch;margin-bottom:var(--space-md)}
+.bulk textarea{width:100%;min-height:120px}
+.bulk-table{width:100%;border-collapse:collapse;margin-top:var(--space-md)}
+.bulk-table td{padding:var(--space-2xs) var(--space-xs);border-bottom:1px solid var(--line);font-size:var(--text-sm);vertical-align:middle}
+.bulk-table td.bulk-link{color:var(--ink-2);word-break:break-all}
+
 /* ---------- how it works ---------- */
 .how{padding-top:var(--space-3xl);padding-bottom:var(--space-3xl);border-top:1px solid var(--line)}
 .how h2,.faq h2{
@@ -465,6 +473,18 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
     </div>
   </section>
 
+  <section class="bulk">
+    <div class="wrap">
+      <h2 class="reveal">Bulk link generator</h2>
+      <p class="bulk-intro reveal d1">Paste multiple numbers, one per line - all use the country code selected above.</p>
+      <div class="reveal d2">
+        <textarea id="bulkInput" placeholder="50 123 4567&#10;50 234 5678&#10;50 345 6789"></textarea>
+        <button class="btn btn-primary" id="bulkGenBtn" type="button" style="margin-top:var(--space-sm)">Generate links</button>
+        <div id="bulkResults"></div>
+      </div>
+    </div>
+  </section>
+
   <section class="how">
     <div class="wrap">
       <h2 class="reveal">How it works</h2>
@@ -543,7 +563,7 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
 </footer>
 
 <script type="module">
-import { buildQrSvgMarkup, buildVcard, buildShareUrl } from './logic.js';
+import { buildQrSvgMarkup, buildVcard, buildShareUrl, parseBulkDigits } from './logic.js';
 
 (function(){
   "use strict";
@@ -723,6 +743,64 @@ import { buildQrSvgMarkup, buildVcard, buildShareUrl } from './logic.js';
     var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
+  });
+
+  var bulkInput = document.getElementById('bulkInput');
+  var bulkGenBtn = document.getElementById('bulkGenBtn');
+  var bulkResults = document.getElementById('bulkResults');
+  var bulkQr = null;
+
+  bulkGenBtn.addEventListener('click', function () {
+    var digitsList = parseBulkDigits(bulkInput.value);
+    if (!digitsList.length) {
+      bulkResults.innerHTML = '';
+      return;
+    }
+    var rows = digitsList.map(function (digits) {
+      var url = 'https://wa.me/' + cc.value + digits;
+      return '<tr data-url="' + url + '">' +
+        '<td>' + cc.value + ' ' + digits + '</td>' +
+        '<td class="bulk-link">' + url + '</td>' +
+        '<td><button class="btn btn-ghost bulk-copy" type="button">Copy</button></td>' +
+        '<td><button class="btn btn-ghost bulk-qr" type="button">QR</button></td>' +
+        '</tr>';
+    }).join('');
+    bulkResults.innerHTML = '<table class="bulk-table"><tbody>' + rows + '</tbody></table><div id="bulkQrHolder" style="display:none;margin-top:var(--space-md)"></div>';
+
+    bulkResults.querySelectorAll('.bulk-copy').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var tr = btn.closest('tr');
+        navigator.clipboard.writeText(tr.dataset.url).then(function () {
+          btn.textContent = 'Copied';
+          setTimeout(function () { btn.textContent = 'Copy'; }, 1200);
+        });
+      });
+    });
+
+    bulkResults.querySelectorAll('.bulk-qr').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var tr = btn.closest('tr');
+        var holder = document.getElementById('bulkQrHolder');
+        holder.innerHTML = '';
+        holder.style.display = 'block';
+        bulkQr = new QRCode(holder, {
+          text: tr.dataset.url,
+          width: 320, height: 320,
+          colorDark: INK, colorLight: PAPER,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+        setTimeout(function () {
+          var canvas = holder.querySelector('canvas');
+          if (!canvas) return;
+          var a = document.createElement('a');
+          a.href = canvas.toDataURL('image/png');
+          a.download = 'whatsapp-qr-' + tr.dataset.url.replace(/\D/g, '') + '.png';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, 50);
+      });
+    });
   });
 
   /* ---------- entry reveals ---------- */
