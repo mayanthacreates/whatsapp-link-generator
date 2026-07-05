@@ -781,6 +781,7 @@ import { buildQrSvgMarkup, buildVcard, buildShareUrl, parseBulkDigits } from './
       btn.addEventListener('click', function () {
         var tr = btn.closest('tr');
         var holder = document.getElementById('bulkQrHolder');
+        bulkResults.querySelectorAll('.bulk-qr').forEach(function (b) { b.disabled = true; });
         holder.innerHTML = '';
         holder.style.display = 'block';
         bulkQr = new QRCode(holder, {
@@ -798,6 +799,7 @@ import { buildQrSvgMarkup, buildVcard, buildShareUrl, parseBulkDigits } from './
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
+          bulkResults.querySelectorAll('.bulk-qr').forEach(function (b) { b.disabled = false; });
         }, 50);
       });
     });
