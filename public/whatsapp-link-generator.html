@@ -142,7 +142,7 @@ button{font-family:inherit}
 .field-group:last-child{margin-bottom:0}
 
 .phone-row{display:flex;gap:var(--space-2xs)}
-select,input[type="tel"],textarea{
+select,input[type="tel"],input[type="text"],textarea{
   font-family:inherit;
   font-size:var(--text-base);
   color:var(--ink);
@@ -415,7 +415,7 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
 
           <div class="field-group">
             <label class="label" for="vcardName">Contact name (for vCard, optional)</label>
-            <input type="text" id="vcardName" placeholder="Ali Motors">
+            <input type="text" id="vcardName" placeholder="Ali Motors" autocomplete="off">
           </div>
         </div>
 
