@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildQrSvgMarkup, buildVcard } from '../public/logic.js';
+import { buildQrSvgMarkup, buildVcard, buildShareUrl } from '../public/logic.js';
 
 test('buildQrSvgMarkup renders one rect per dark module', () => {
   const fakeQr = {
@@ -24,4 +24,9 @@ test('buildVcard falls back to a default name when empty', () => {
 test('buildVcard uses the provided name', () => {
   const vcf = buildVcard('Ali Motors', '971501234567');
   assert.match(vcf, /FN:Ali Motors/);
+});
+
+test('buildShareUrl encodes all three fields as query params', () => {
+  const url = buildShareUrl('https://mayantha.ae', '/whatsapp-link-generator', '971', '50 123 4567', 'Hi there');
+  assert.equal(url, 'https://mayantha.ae/whatsapp-link-generator?cc=971&phone=50%20123%204567&msg=Hi%20there');
 });

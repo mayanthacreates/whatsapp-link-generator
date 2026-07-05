@@ -341,6 +341,9 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
 
   <section class="tool">
     <div class="wrap">
+      <div class="reveal d1" style="display:flex;justify-content:flex-end;margin-bottom:var(--space-sm)">
+        <button class="btn btn-ghost" id="shareBtn" type="button">Copy shareable link</button>
+      </div>
       <div class="tool-panel reveal d2">
 
         <!-- LEFT: inputs -->
@@ -501,7 +504,7 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
 </footer>
 
 <script type="module">
-import { buildQrSvgMarkup, buildVcard } from './logic.js';
+import { buildQrSvgMarkup, buildVcard, buildShareUrl } from './logic.js';
 
 (function(){
   "use strict";
@@ -635,6 +638,25 @@ import { buildQrSvgMarkup, buildVcard } from './logic.js';
     URL.revokeObjectURL(url);
   });
 
+  function prefillFromQuery() {
+    var params = new URLSearchParams(location.search);
+    if (params.has('cc') && [...cc.options].some(function(o){ return o.value === params.get('cc'); })) {
+      cc.value = params.get('cc');
+    }
+    if (params.has('phone')) phone.value = params.get('phone');
+    if (params.has('msg')) msg.value = params.get('msg');
+  }
+
+  var shareBtn = document.getElementById('shareBtn');
+  shareBtn.addEventListener('click', function () {
+    var url = buildShareUrl(location.origin, location.pathname, cc.value, phone.value, msg.value);
+    navigator.clipboard.writeText(url).then(function () {
+      shareBtn.textContent = 'Copied';
+      setTimeout(function () { shareBtn.textContent = 'Copy shareable link'; }, 1600);
+    });
+  });
+
+  prefillFromQuery();
   phone.addEventListener('input', render);
   msg.addEventListener('input', render);
   cc.addEventListener('change', render);

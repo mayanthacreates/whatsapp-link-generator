@@ -16,3 +16,9 @@ export function buildVcard(name, fullDigits) {
   const fn = name.trim() || 'WhatsApp Contact';
   return 'BEGIN:VCARD\nVERSION:3.0\nFN:' + fn + '\nTEL;TYPE=CELL:+' + fullDigits + '\nEND:VCARD\n';
 }
+
+export function buildShareUrl(origin, pathname, ccValue, phoneValue, msgValue) {
+  return origin + pathname + '?cc=' + encodeURIComponent(ccValue) +
+    '&phone=' + encodeURIComponent(phoneValue) +
+    '&msg=' + encodeURIComponent(msgValue);
+}
