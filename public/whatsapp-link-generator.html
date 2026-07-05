@@ -791,15 +791,18 @@ import { buildQrSvgMarkup, buildVcard, buildShareUrl, parseBulkDigits } from './
           correctLevel: QRCode.CorrectLevel.M
         });
         setTimeout(function () {
-          var canvas = holder.querySelector('canvas');
-          if (!canvas) return;
-          var a = document.createElement('a');
-          a.href = canvas.toDataURL('image/png');
-          a.download = 'whatsapp-qr-' + tr.dataset.url.replace(/\D/g, '') + '.png';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          bulkResults.querySelectorAll('.bulk-qr').forEach(function (b) { b.disabled = false; });
+          try {
+            var canvas = holder.querySelector('canvas');
+            if (!canvas) return;
+            var a = document.createElement('a');
+            a.href = canvas.toDataURL('image/png');
+            a.download = 'whatsapp-qr-' + tr.dataset.url.replace(/\D/g, '') + '.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          } finally {
+            bulkResults.querySelectorAll('.bulk-qr').forEach(function (b) { b.disabled = false; });
+          }
         }, 50);
       });
     });
