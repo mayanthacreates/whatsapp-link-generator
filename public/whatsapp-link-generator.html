@@ -494,7 +494,9 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
   </div>
 </footer>
 
-<script>
+<script type="module">
+import { buildQrSvgMarkup } from './logic.js';
+
 (function(){
   "use strict";
 
@@ -594,20 +596,6 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
     a.click();
     document.body.removeChild(a);
   });
-
-  function buildQrSvgMarkup(qrModel, cellPx, inkColor, paperColor) {
-    var count = qrModel.getModuleCount();
-    var size = count * cellPx;
-    var rects = '<rect width="100%" height="100%" fill="' + paperColor + '"/>';
-    for (var r = 0; r < count; r++) {
-      for (var c = 0; c < count; c++) {
-        if (qrModel.isDark(r, c)) {
-          rects += '<rect x="' + (c * cellPx) + '" y="' + (r * cellPx) + '" width="' + cellPx + '" height="' + cellPx + '" fill="' + inkColor + '"/>';
-        }
-      }
-    }
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + size + ' ' + size + '" width="' + size + '" height="' + size + '">' + rects + '</svg>';
-  }
 
   var downloadSvgBtn = document.getElementById('downloadSvgBtn');
   downloadSvgBtn.addEventListener('click', function () {

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildQrSvgMarkup } from './logic-helpers.mjs';
+import { buildQrSvgMarkup } from '../public/logic.js';
 
 test('buildQrSvgMarkup renders one rect per dark module', () => {
   const fakeQr = {
