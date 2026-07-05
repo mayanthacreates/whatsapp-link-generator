@@ -238,6 +238,32 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
 .open-link{display:inline-block;margin-top:var(--space-sm);font-size:var(--text-sm);color:var(--brand);font-weight:500;transition:color var(--dur-micro) ease}
 .open-link:hover{color:var(--ink)}
 
+.phone-mock{
+  width:100%;max-width:280px;margin:0 auto var(--space-md);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  background:#ECE5DD;
+}
+.phone-header{
+  background:#008069;color:#fff;
+  padding:var(--space-xs) var(--space-sm);
+  display:flex;align-items:center;gap:var(--space-xs);
+}
+.phone-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.3);flex:0 0 auto}
+.phone-header-text{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.phone-name{font-size:var(--text-sm);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.phone-status{font-size:var(--text-xs);color:rgba(255,255,255,.75)}
+.phone-body{padding:var(--space-md) var(--space-sm);min-height:120px}
+.phone-bubble{
+  background:#D9FDD3;border-radius:8px 8px 8px 2px;
+  padding:var(--space-2xs) var(--space-xs);
+  font-size:var(--text-sm);color:#111B21;
+  max-width:82%;margin-left:auto;
+  white-space:pre-wrap;word-break:break-word;
+}
+.phone-bubble .phone-meta{
+  display:block;text-align:right;font-size:10px;color:#667781;margin-top:2px;
+}
+
 /* ---------- how it works ---------- */
 .how{padding-top:var(--space-3xl);padding-bottom:var(--space-3xl);border-top:1px solid var(--line)}
 .how h2,.faq h2{
@@ -399,6 +425,19 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
           </div>
 
           <div class="result output-state" id="result">
+            <div class="phone-mock">
+              <div class="phone-header">
+                <div class="phone-avatar"></div>
+                <div class="phone-header-text">
+                  <span class="phone-name" id="mockNumber">+971 50 123 4567</span>
+                  <span class="phone-status">online</span>
+                </div>
+              </div>
+              <div class="phone-body">
+                <div class="phone-bubble" id="mockBubble">Hi! I found you through your website and I'd like to know more.</div>
+              </div>
+            </div>
+
             <div class="field-group">
               <span class="label">Your link</span>
               <div class="link-row">
@@ -524,6 +563,8 @@ import { buildQrSvgMarkup, buildVcard, buildShareUrl } from './logic.js';
   var qrBox = document.getElementById('qrBox');
   var downloadBtn = document.getElementById('downloadBtn');
   var openLink = document.getElementById('openLink');
+  var mockNumber = document.getElementById('mockNumber');
+  var mockBubble = document.getElementById('mockBubble');
 
   var qr = null;
   var currentUrl = '';
@@ -552,6 +593,19 @@ import { buildQrSvgMarkup, buildVcard, buildShareUrl } from './logic.js';
 
     linkField.textContent = currentUrl;
     openLink.href = currentUrl;
+
+    var digits = phone.value.replace(/\D/g,'').replace(/^0+/,'');
+    mockNumber.textContent = '+' + cc.value + ' ' + digits;
+    var text = msg.value.trim() || 'Hi! I found you through your website and I\'d like to know more.';
+    var now = new Date();
+    var hh = now.getHours() % 12 || 12;
+    var mm = String(now.getMinutes()).padStart(2, '0');
+    var ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+    mockBubble.textContent = text;
+    var meta = document.createElement('span');
+    meta.className = 'phone-meta';
+    meta.textContent = hh + ':' + mm + ' ' + ampm + ' ✓✓';
+    mockBubble.appendChild(meta);
 
     if(!qr){
       qr = new QRCode(qrBox, {
