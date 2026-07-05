@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildQrSvgMarkup, buildVcard, buildShareUrl, parseBulkDigits } from '../public/logic.js';
+import { buildQrSvgMarkup, buildVcard, buildShareUrl, parseBulkDigits } from '../public/whatsapp-link-generator-logic.js';
 
 test('buildQrSvgMarkup renders one rect per dark module', () => {
   const fakeQr = {
