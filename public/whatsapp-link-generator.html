@@ -405,6 +405,7 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
                 <span class="label">QR code</span>
                 <p>Scan with any phone camera to open the chat instantly. Print it, frame it, sticker it.</p>
                 <button class="btn btn-ghost" id="downloadBtn" type="button">Download QR (PNG)</button>
+                <button class="btn btn-ghost" id="downloadSvgBtn" type="button">Download QR (SVG)</button>
                 <br>
                 <a class="open-link" id="openLink" href="#" target="_blank" rel="noopener">Test the link &rarr;</a>
               </div>
@@ -592,6 +593,35 @@ select:hover,input:hover,textarea:hover{border-color:var(--ink-3)}
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  });
+
+  function buildQrSvgMarkup(qrModel, cellPx, inkColor, paperColor) {
+    var count = qrModel.getModuleCount();
+    var size = count * cellPx;
+    var rects = '<rect width="100%" height="100%" fill="' + paperColor + '"/>';
+    for (var r = 0; r < count; r++) {
+      for (var c = 0; c < count; c++) {
+        if (qrModel.isDark(r, c)) {
+          rects += '<rect x="' + (c * cellPx) + '" y="' + (r * cellPx) + '" width="' + cellPx + '" height="' + cellPx + '" fill="' + inkColor + '"/>';
+        }
+      }
+    }
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + size + ' ' + size + '" width="' + size + '" height="' + size + '">' + rects + '</svg>';
+  }
+
+  var downloadSvgBtn = document.getElementById('downloadSvgBtn');
+  downloadSvgBtn.addEventListener('click', function () {
+    if (!currentUrl || !qr) return;
+    var svg = buildQrSvgMarkup(qr._oQRCode, 8, INK, PAPER);
+    var blob = new Blob([svg], { type: 'image/svg+xml' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'whatsapp-qr-' + cc.value + phone.value.replace(/\D/g, '') + '.svg';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   });
 
   phone.addEventListener('input', render);
