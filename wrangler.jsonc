@@ -2,8 +2,5 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tool-whatsapp-link-generator",
   "compatibility_date": "2026-06-01",
-  "assets": { "directory": "./public", "html_handling": "auto-trailing-slash" },
-  "routes": [
-    { "pattern": "mayantha.ae/whatsapp-link-generator*", "zone_name": "mayantha.ae" }
-  ]
+  "assets": { "directory": "./public", "html_handling": "auto-trailing-slash" }
 }
